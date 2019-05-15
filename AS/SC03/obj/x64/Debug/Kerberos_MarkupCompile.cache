@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-F:\download\Kerberos-master\Kerberos-master\SC03\obj\x64\Debug\
+F:\readme\kerbors\AS\SC03\obj\x64\Debug\
 Kerberos
 none
 false
 DEBUG;TRACE
-F:\download\Kerberos-master\Kerberos-master\SC03\App.xaml
+F:\readme\kerbors\AS\SC03\App.xaml
 4571863263
 
-11423535700
+15-1817509562
 131569487696
 AS.xaml;Login.xaml;Server.xaml;TGS.xaml;
 
-False
+True
 

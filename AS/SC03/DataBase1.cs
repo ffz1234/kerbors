@@ -10,7 +10,7 @@ namespace SC03
 {
     public class DataBase1
     {
-        OleDbConnection oleDb = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=F:\download\Kerberos-master\Kerberos-master\SC03\AS.accdb");
+        OleDbConnection oleDb = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=F:\readme\kerbors\AS\SC03\AS.accdb");
 
         public DataBase1() //构造函数
         {

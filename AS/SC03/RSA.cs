@@ -14,6 +14,32 @@ namespace SC03
             
             
         }
+        public string GetRandomString(int length)//得到DES密钥
+        {
+            const string key = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+            if (length < 1)
+                return string.Empty;
+            Random rnd = new Random();
+            byte[] buffer = new byte[8];
+            ulong bit = 31;
+            ulong result = 0;
+            int index = 0;
+            StringBuilder sb = new StringBuilder((length / 5 + 1) * 5);
+            while (sb.Length < length)
+            {
+                rnd.NextBytes(buffer);
+                buffer[5] = buffer[6] = buffer[7] = 0x00;
+                result = BitConverter.ToUInt64(buffer, 0);
+                while (result > 0 && sb.Length < length)
+                {
+                    index = (int)(bit & result);
+                    sb.Append(key[index]);
+                    result = result >> 5;
+                }
+            }
+            return sb.ToString();
+        }
+
 
 
         //RSA产生密钥
