@@ -96,9 +96,9 @@ namespace SC03
             ssmg = "注册成功时间：" + msg14.msg14_TS+"\n";
             return ssmg;
         }
-        public string MMessage(Message msg2)//显示发送信息2
+        public string MMessage(Message msg1)//显示发送信息2
         {
-            //Message msg2 = dealMsg(msg1);
+            Message msg2 = dealMsg(msg1);
             string tickets;
             tickets = String.Concat(getkey2(), msg2.msg2_tkt_IDc, msg2_tkt_ADc, msg2.msg2_IDtgs, msg2.msg2_TS2, msg2.msg2_Lifetime2);
             string M;
@@ -196,12 +196,12 @@ namespace SC03
         //获取客户端session key 的副本
         public string getkey2()
         {
-           string IDC = "12345678";
-            return IDC;
+           string kctgs = Y.GetRandomString(8);
+            return kctgs;
         }
         public string gettgskey()
         {
-            string key = "12345678";
+            string key = "ASandTGS";
             return key;
         }
 

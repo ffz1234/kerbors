@@ -10,19 +10,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Label Content="AS服务器IP" HorizontalAlignment="Left" Margin="202,50,0,0" VerticalAlignment="Top" Width="80" Height="26"/>
-        
-        <Label Content="用户名:" HorizontalAlignment="Left" Margin="202,190,0,0" VerticalAlignment="Top" Width="80"/>
-        <Label Content="密码:" HorizontalAlignment="Left" Margin="202,240,0,0" VerticalAlignment="Top" Width="80"/>
-        <TextBox HorizontalAlignment="Left" Name="textbox3" Height="23" Margin="287,190,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="251"/>
-        <TextBox HorizontalAlignment="Left" Name="textbox4" Height="23" Margin="287,240,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="251"/>
-        <Button Content="登录" Click="button_click2" HorizontalAlignment="Left" Margin="360,300,0,0" VerticalAlignment="Top" Width="76"/>
-        <TextBox HorizontalAlignment="Left" Name="textbox1" Height="23" Margin="328,50,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="210"/>
-        <Label Content="AS服务器端口" HorizontalAlignment="Left" Margin="202,100,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="328,100,0,0" TextWrapping="Wrap"  Name="textbox2" VerticalAlignment="Top" Width="210"/>
-        <Button Content="建立连接" Click="button_click1" HorizontalAlignment="Left" Margin="313,140,0,0" VerticalAlignment="Top" Width="75"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="250,340,0,0" TextWrapping="Wrap" Name="textbox5" VerticalAlignment="Top" Width="400"/>
-        <Label Content="反馈信息" HorizontalAlignment="Left" Margin="132,340,0,0" VerticalAlignment="Top"/>
+        <Button Content="开启AS服务端" HorizontalAlignment="Left" Height="82" Margin="272,307,0,0" VerticalAlignment="Top" Width="234" Click="Button_Click"/>
 
     </Grid>
 </Window>

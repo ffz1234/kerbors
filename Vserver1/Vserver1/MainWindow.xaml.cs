@@ -21,6 +21,11 @@ namespace Vserver1
         private Int32 port;
         public string Time = DateTime.Now.ToString("yyyy/MM/dd HH：mm：ss");
         private static byte[] result = new byte[1000];
+        public string kcvkey;
+        public string vkey()
+        {
+            return kcvkey;
+            }
         public MainWindow()
         {
             string host = GetLocalIP();
@@ -59,81 +64,6 @@ namespace Vserver1
             Thread receiveThread = new Thread(ReceiveMessage);
             receiveThread.Start(connection);
         }
-
-        //处理客户端发过来的消息。
-        /*   public Message DealMsg1(string msg5)
-           {
-               Message a = new Message();
-               string type;
-               string pwd;
-               string tag;
-               string ticket;
-               string Authenticaorc;
-               string Mticket;
-               string MAuthenticaorc;
-               string IDC;
-               string ADC;
-               string IDv;
-               string TS4;
-               string Lifetime4;
-               string TS5;
-               string IDC1;
-               string ADC1;
-               type = msg5.Substring(0, 2);
-               pwd = msg5.Substring(2, 4);
-               tag = msg5.Substring(6, 2);
-               string tkA;
-               tkA = msg5.Substring(8, msg5.Length - 8);
-               //Console.WriteLine(tkA);
-               string[] sArray = Regex.Split(tkA, "####", RegexOptions.IgnoreCase);
-               Mticket = sArray[0];
-               MAuthenticaorc = sArray[1];
-               ticket = DesDecrypt(Mticket,"12345678");
-               Authenticaorc = DesDecrypt(MAuthenticaorc, "12345678");
-               string[] sArray1 = Regex.Split(ticket, "####", RegexOptions.IgnoreCase);
-               IDC =sArray1[0].Substring(8,3);
-               ADC = sArray1[1];
-               IDv = sArray1[2].Substring(0, 3);
-               TS4 = sArray1[2].Substring(3, Time.Length);
-               Lifetime4 = sArray1[2].Substring(3 + Time.Length, 4);
-               string[] sArray2 = Regex.Split(Authenticaorc, "####", RegexOptions.IgnoreCase);
-               IDC1 = sArray2[0];
-               ADC1 = sArray2[1];
-               //int index2 = sArray2[2].IndexOf('\0');
-               //int len2 = sArray2[2].Length;
-               //sArray2[2].Remove(index2, len2 - index2);
-               TS5 = sArray2[2];
-               a = new Message(TS4,Lifetime4,IDC,ADC,IDv,TS5,IDC1,ADC1);
-               return a;
-
-           }*/
-        private string StringToUnicode(string value)
-        {
-            byte[] bytes = Encoding.Unicode.GetBytes(value);
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i < bytes.Length; i += 2)
-            {
-                // 取两个字符，每个字符都是右对齐。
-                stringBuilder.AppendFormat("u{0}{1}", bytes[i + 1].ToString("x").PadLeft(2, '0'), bytes[i].ToString("x").PadLeft(2, '0'));
-            }
-            return stringBuilder.ToString();
-        }
-
-        /// <summary>
-        /// Unicode转字符串
-        /// </summary>
-        /// <returns>The to string.</returns>
-        /// <param name="unicode">Unicode.</param>
-        private string UnicodeToString(string unicode)
-        {
-            string resultStr = "";
-            string[] strList = unicode.Split('u');
-            for (int i = 1; i < strList.Length; i++)
-            {
-                resultStr += (char)int.Parse(strList[i], System.Globalization.NumberStyles.HexNumber);
-            }
-            return resultStr;
-        }
         public Message DealMsg7(string msg7)//处理信息7
         {
             Message a = new Message();
@@ -168,14 +98,17 @@ namespace Vserver1
                 string[] sArray = Regex.Split(tkA, "####", RegexOptions.IgnoreCase);
                 Mticket = sArray[0];
                 MAuthenticaorc = sArray[1];
-                ticket = DecryptString(Mticket, "12345678");
-                Authenticaorc = DecryptString(MAuthenticaorc, "12345678");
+                //MessageBox.Show(getvkey());
+                ticket = DecryptString(Mticket,getvkey());
                 string[] sArray1 = Regex.Split(ticket, "####", RegexOptions.IgnoreCase);
+                kcvkey = sArray1[0].Substring(0, 8);
+                //MessageBox.Show(kcvkey);
                 IDC = sArray1[0].Substring(8, 3);
                 ADC = sArray1[1];
                 IDv = sArray1[2].Substring(0, 3);
                 TS4 = sArray1[2].Substring(3, Time.Length);
                 Lifetime4 = sArray1[2].Substring(3 + Time.Length, 4);
+                Authenticaorc = DecryptString(MAuthenticaorc,kcvkey);
                 string[] sArray2 = Regex.Split(Authenticaorc, "####", RegexOptions.IgnoreCase);
                 IDC1 = sArray2[0];
                 ADC1 = sArray2[1];
@@ -183,7 +116,7 @@ namespace Vserver1
                 //int len2 = sArray2[2].Length;
                 //sArray2[2].Remove(index2, len2 - index2);
                 TS5 = sArray2[2];
-                a = new Message(TS4, Lifetime4, IDC, ADC, IDv, TS5, IDC1, ADC1);
+                a = new Message(TS4, Lifetime4, IDC, ADC, IDv, TS5, IDC1, ADC1,kcvkey);
             }
             if (type =="07")
             {
@@ -192,7 +125,7 @@ namespace Vserver1
                 MM = sArray1[1];
                 string CC;
                 string rsa;
-                CC = DecryptString(MM, "12345678");
+                CC = DecryptString(MM,kcvkey);
                 string[] sArray = Regex.Split(CC, "####", RegexOptions.IgnoreCase);
                 tag = sArray[0].Substring(0, 2);
                 IDC = sArray[0].Substring(2, 3);
@@ -211,7 +144,7 @@ namespace Vserver1
                 MM = sArray1[0];
                 string CC;
                 string rsa;
-                CC = DecryptString(MM, "12345678");
+                CC = DecryptString(MM,kcvkey);
                 string[] sArray = Regex.Split(CC, "####", RegexOptions.IgnoreCase);
                 // tag = Int32.Parse(CC.Substring(0, 
                 tag = sArray[0].Substring(0, 2);
@@ -371,6 +304,10 @@ namespace Vserver1
             {
                 return ex.Message;
             }
+        }
+        public string getvkey()
+        {
+            return "TGStoSER";
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)

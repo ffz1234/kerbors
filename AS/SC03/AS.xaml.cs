@@ -78,7 +78,6 @@ HWvD8xrwtyT4z/dBwS801y28n6uc4CwB1T+LQY4UqAZxN77Z23n0umGU=</D></RSAKeyValue>";
             string IDc;
             string tgs;
             string TS1;
-            string MM;
             type= msg1.Substring(0,2);
             tag = msg1.Substring(6, 2);
             pwd = msg1.Substring(2,4);
@@ -89,6 +88,7 @@ HWvD8xrwtyT4z/dBwS801y28n6uc4CwB1T+LQY4UqAZxN77Z23n0umGU=</D></RSAKeyValue>";
                 tgs = msg1.Substring(11, 3);
                 TS1 = msg1.Substring(14, y);
                 a = new Message(IDc, tgs, TS1);
+               // MessageBox.Show(a.IDtgs);
             }
             if(type=="13")
             {

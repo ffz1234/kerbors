@@ -21,6 +21,7 @@ namespace Vserver1
         public string type;
         public string tag;
         public string pwd;
+        private static string cvkey1;
         byte[] byData = new byte[1000];
         char[] charData = new char[2000];
         public string private_key = @"<RSAKeyValue><Modulus>sIfR0O4uR80lTeY4pjE43OijKhdWKlXYs80bX8iAIsE/spkrxufhFL0D04IgquzeUz7CAvkRE62vs9WnUqLSjPPT7mEw6bRY3F
@@ -97,8 +98,9 @@ ue>
         public string msg5_Au_TS5;
         public string msg5_Au_IDc;
         public string msg_Au_ADc;
+        public string cvkey;
 
-        public Message(string TS4, string Lifetime4, string IDc, string ADc, string IDv, string TS5, string IDC1, string ADC1)
+        public Message(string TS4, string Lifetime4, string IDc, string ADc, string IDv, string TS5, string IDC1, string ADC1,string cvkey)
         {
             this.pwd = "0000";
             this.type = "05";
@@ -110,6 +112,7 @@ ue>
             this.msg5_tkt_TS4 = TS4;
             this.msg_Au_ADc = ADC1;
             this.msg5_Au_IDc = IDC1;
+            this.cvkey = cvkey;
         }
         //Message6和
         public string msg6_TS6;
@@ -195,7 +198,8 @@ ue>
             Message a = new Message();
             a = dealmsg7(msg7);
             string ssmg;
-            ssmg = string.Concat(a.type,a.pwd,Encrypt1(string.Concat(a.tag,a.msg8_IDV,a.msg8_msg,"####", y.Sign(a.msg8_IDV, private_key)),"12345678"));
+           // MessageBox.Show(cvkey1);
+            ssmg = string.Concat(a.type,a.pwd,Encrypt1(string.Concat(a.tag,a.msg8_IDV,a.msg8_msg,"####", y.Sign(a.msg8_IDV, private_key)),cvkey1));
            // MessageBox.Show(a.msg8_msg);
             return ssmg;
         }
@@ -218,6 +222,7 @@ ue>
            // DataBase1 a = new DataBase1();
             //UTF8Encoding enc = new UTF8Encoding();
             string type = msg5.type;
+            cvkey1 = msg5.cvkey;
             Message result = new Message();
             DateTime dt2 = Convert.ToDateTime(msg5.msg5_Au_TS5);
             DateTime d3 = DateTime.Parse(msg5.msg5_tkt_TS4).AddSeconds(Convert.ToInt32(msg5.msg5_tkt_Lifetime4));
@@ -249,7 +254,7 @@ ue>
             a = dealMsg(msg5);
             string ssmg;
             string ssmg1;
-            ssmg = Encrypt1(string.Concat(a.tag,a.msg6_TS6), "12345678");
+            ssmg = Encrypt1(string.Concat(a.tag,a.msg6_TS6),cvkey1);
             ssmg1 = string.Concat(a.type, a.pwd, ssmg);
             return ssmg1;
         }
