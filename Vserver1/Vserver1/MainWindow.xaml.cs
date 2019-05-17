@@ -15,17 +15,29 @@ namespace Vserver1
     /// </summary>
     public partial class MainWindow : Window
     {
+        public string msg8_IDV = "SER";
+        Dic dic = new Dic();
+        public string publickey = @"<RSAKeyValue><Modulus>uhRRNLgDnQT4BqDRxzNDRnBmO9s3AeKgJQCY87di0LYiLjDe4kJqknne+Glw4RBSwqZjbS8DZywXG4jPR1ul+QzgGNPw+fdgAJ
+yZRvp5UdIGwblqKT4e1gdu/gNCrzq0ua/3CsUdhNh/5lg0H2vbnWLxtz1UGddqOp16vOXI7jk=</Modulus><Exponent>AQAB</Exponent></RSAKeyVal
+ue>
+";
+       public string private_key = @"<RSAKeyValue><Modulus>sIfR0O4uR80lTeY4pjE43OijKhdWKlXYs80bX8iAIsE/spkrxufhFL0D04IgquzeUz7CAvkRE62vs9WnUqLSjPPT7mEw6bRY3F
+Xc1lxaDQA8kX2VPFzuEDjMDYvBLQbx2yNEfy16KiwhosXBDLl5X7SrUMV9IjyVOVJkFf4Egmk=</Modulus><Exponent>AQAB</Exponent><P>x4+1du7o
+4K41urYdjzu957+o2M/MNzdhnPjKZlAYPJzOuHupY0j7N4ZzBYPHgC4DS8jX1H3o53UWhayHc8475w==</P><Q>4nSsiXVwjQ0+tNGD3qHBmqxWx3yIwa7KJ
+DAeQuA2BgdeQPUMZsYJF9wij+RATWdzd4ghXj80t2C+kxvMjKQFLw==</Q><DP>qPGWlJtpd1zEi87Fc48GFH4DOZmhr1UpRDSzVK6V9ipiL3gxTKZqVvVxx
+sdrS66oh63+WhxF4j0T1hLbkUSVHQ==</DP><DQ>hVN+FbwQFOucZKcKBbSkoOUgfniip626E45E8sjA5dHGu2XK9GNaDTMtIhyXgzsKL3D1fGCoL+MEsOXo
+C1GyPw==</DQ><InverseQ>h3QNBsdHXARJAQhxus/BBmqjSEl0Mo8sCmZwanRgQAQo7E9AxNtZlNMaMEbd14iatTGIncKxi+4PaqhyjxkD2w==</Inverse
+Q><D>ngn6HUIezMksDIF/VcnbTmo3KQebbGtOhimpyCaIEJVRoWLffkM5jodpVYG6HUvR/lTA/EhesW9dTXKJScHbHDgIR3ShrsiJQutCfRDFEScCApRJIF6
+9chxpQixT5ht4L+PiZvlKg6sMn5IZH/7PG0x3xM7seTWAkwnAF/wbY8E=</D></RSAKeyValue>
+";
         private Socket connection;
         private TcpListener listener;
         private IPAddress ip;
         private Int32 port;
+        RSAHelper y = new RSAHelper();
         public string Time = DateTime.Now.ToString("yyyy/MM/dd HH：mm：ss");
         private static byte[] result = new byte[1000];
         public string kcvkey;
-        public string vkey()
-        {
-            return kcvkey;
-            }
         public MainWindow()
         {
             string host = GetLocalIP();
@@ -46,7 +58,7 @@ namespace Vserver1
                 //在新线程中启动新的socket连接，每个socket等待，并保持连接
 
                 IPEndPoint iprm = (IPEndPoint)connection.RemoteEndPoint;
-                this.Dispatcher.Invoke(new Action(() => { T1.AppendText("远程主机:" + iprm.Address.ToString() + ":" + iprm.Port.ToString() + "连接上本机\r\n"); }));
+                this.Dispatcher.Invoke(new Action(() => { T1.AppendText("远程主机:" + iprm.Address.ToString() + ":" + iprm.Port.ToString() + "连接上本机" + DateTime.Now.ToString() + "\n" ); }));
                 Thread thread = new Thread(new ThreadStart(dealClient));
                 Thread myThread = new Thread(dealClient);
                 thread.Start();
@@ -116,50 +128,201 @@ namespace Vserver1
                 //int len2 = sArray2[2].Length;
                 //sArray2[2].Remove(index2, len2 - index2);
                 TS5 = sArray2[2];
+                dic.addDic(IDC,kcvkey);
                 a = new Message(TS4, Lifetime4, IDC, ADC, IDv, TS5, IDC1, ADC1,kcvkey);
             }
             if (type =="07")
             {
                 string MM;
-                string[] sArray1 = Regex.Split(msg7.Substring(6,msg7.Length-6), "####", RegexOptions.IgnoreCase);
+                string mark;
+                mark = msg7.Substring(6, 3);
+               // MessageBox.Show(mark);
+                string[] sArray1 = Regex.Split(msg7.Substring(9,msg7.Length-9), "####", RegexOptions.IgnoreCase);
                 MM = sArray1[1];
                 string CC;
                 string rsa;
-                CC = DecryptString(MM,kcvkey);
-                string[] sArray = Regex.Split(CC, "####", RegexOptions.IgnoreCase);
-                tag = sArray[0].Substring(0, 2);
-                IDC = sArray[0].Substring(2, 3);
-                TS = sArray[0].Substring(5, Time.Length);
-                operation = sArray[0].Substring(5 + Time.Length, 3);
-                bookname = sArray[1];
-                rsa = sArray[2];
-               // MessageBox.Show(bookname);
-               Console.WriteLine(bookname);
-                a = new Message(operation, bookname, IDC,DateTime.Parse(TS),rsa);
+                string key;
+                //Dic.myDictionary.TryGetValue(mark, out key);
+               // MessageBox.Show(key);
+                //MessageBox.Show(Dic.myDictionary.ContainsKey(mark).ToString());
+                //if (Dic.myDictionary.ContainsKey(mark))
+              //{
+                 Dic.myDictionary.TryGetValue(mark, out key);
+                // MessageBox.Show(key);
+                 CC = DecryptString(MM,key);
+                 string[] sArray = Regex.Split(CC, "####", RegexOptions.IgnoreCase);
+                 tag = sArray[0].Substring(0, 2);
+                 IDC = sArray[0].Substring(2, 3);
+                 TS = sArray[0].Substring(5, Time.Length);
+                 operation = sArray[0].Substring(5 + Time.Length, 3);
+                 bookname = sArray[1];
+                 rsa = sArray[2];
+                 //MessageBox.Show(bookname);
+                    //Console.WriteLine(bookname);
+                    a = new Message(mark,operation, bookname, IDC, DateTime.Parse(TS), rsa);
+              // }
             }
             if(type=="09")
             {
                 string MM;
-                string[] sArray1 = Regex.Split(msg7.Substring(6, msg7.Length - 6), "####", RegexOptions.IgnoreCase);
+                string mark;
+                mark = msg7.Substring(6, 3);
+                //MessageBox.Show(mark);
+                string[] sArray1 = Regex.Split(msg7.Substring(9, msg7.Length - 9), "####", RegexOptions.IgnoreCase);
                 MM = sArray1[0];
                 string CC;
                 string rsa;
-                CC = DecryptString(MM,kcvkey);
-                string[] sArray = Regex.Split(CC, "####", RegexOptions.IgnoreCase);
-                // tag = Int32.Parse(CC.Substring(0, 
-                tag = sArray[0].Substring(0, 2);
-                IDC = sArray[0].Substring(2, 3);
-                operation = sArray[0].Substring(5, 3);
-                rsa = sArray[1];
-              // MessageBox.Show(operation);
-               // MessageBox.Show(IDC);
-               // MessageBox.Show(rsa);
-               // MessageBox.Show(a.type);
-                a = new Message(IDC,operation,rsa);
+                string key;
+               // Dic.myDictionary.TryGetValue(mark, out key);
+               // MessageBox.Show(key);
+                //if (Dic.myDictionary.ContainsKey(mark))
+                //{
+                    Dic.myDictionary.TryGetValue(mark, out key);
+                    CC = DecryptString(MM,key);
+                    string[] sArray = Regex.Split(CC, "####", RegexOptions.IgnoreCase);
+                    // tag = Int32.Parse(CC.Substring(0, 
+                    tag = sArray[0].Substring(0, 2);
+                    IDC = sArray[0].Substring(2, 3);
+                    operation = sArray[0].Substring(5, 3);
+                    rsa = sArray[1];
+                    // MessageBox.Show(operation);
+                    // MessageBox.Show(IDC);
+                    // MessageBox.Show(rsa);
+                    // MessageBox.Show(a.type);
+                    a = new Message(mark,IDC, operation, rsa);
+                     // MessageBox.Show(a.tag);
+                // }
 
             }
             return a;
             }
+        public Message dealmsg7(Message msg7)//处理message7并且返回一个信息8
+        {
+            DataBase1 b = new DataBase1();
+            Message a = new Message();
+            if (msg7.type == "07" && y.SignCheck(MD5Hash(msg7.msg7_IDC), msg7.msg7_rsa, publickey))
+            {
+                if (msg7.msg7_operation == "sea")
+                {
+                    int judge;
+                    judge = b.compare2(msg7.msg7_bookname);
+                    b.addfinder(msg7.msg7_bookname);
+                    a = new Message(msg8_IDV, judge.ToString());
+                    a.type = "08";
+                    a.tag = "08";
+
+                }
+                if (msg7.msg7_operation == "rea")
+                {
+                    //MessageBox.Show(msg7.msg7_bookname);
+                    string txt = b.gettxt(msg7.msg7_bookname);
+                    b.addviewer(msg7.msg7_bookname);
+                    a = new Message(msg8_IDV, txt);
+                    a.type = "10";
+                    a.tag = "10";
+                    // MessageBox.Show(b.Read());
+                }
+            }
+            // MessageBox.Show(a.msg1_IDc);
+            if (msg7.type == "09" && y.SignCheck(MD5Hash(msg7.msg9_IDC), msg7.msg9_rsa, publickey))
+            {
+                // MessageBox.Show(a.msg1_IDc);
+                if (msg7.msg9_operation == "ref")
+                {
+                    string refresh = b.refresh();
+                    //MessageBox.Show(a.msg1_IDc);
+                    a = new Message(msg8_IDV, refresh);
+                    a.type = "12";
+                    a.tag = "12";
+                }
+            }
+
+            return a;
+        }
+        public Message dealMsg(Message msg5)// 处理message5并·返回一个信息6
+        {
+            // DataBase1 a = new DataBase1();
+            //UTF8Encoding enc = new UTF8Encoding()
+            string type = msg5.type;
+            Message result = new Message();
+            DateTime dt2 = Convert.ToDateTime(msg5.msg5_Au_TS5);
+            DateTime d3 = DateTime.Parse(msg5.msg5_tkt_TS4).AddSeconds(Convert.ToInt32(msg5.msg5_tkt_Lifetime4));
+            DateTime ssmg = DateTime.Parse(msg5.msg5_Au_TS5).AddSeconds(1);
+            if (type == "05")//MESSAGE
+            {
+                if (msg5.msg5_tkt_IDc == msg5.msg5_Au_IDc)
+                {
+                    if (DateTime.Compare(dt2, d3) <= 0)
+                    {
+                        result = new Message(ssmg.ToString());
+                    }
+                    if (DateTime.Compare(dt2, d3) > 0)
+                    {
+                        MessageBox.Show("ticket已过期！");
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("发送数据有误！");
+            }
+            return result;
+
+        }
+        public string ssMessage8(Message msg7)//发送message8,Message10, Message12
+        {
+            string key;
+          //  MessageBox.Show(msg7.msg7_mark);
+            Dic.myDictionary.TryGetValue(msg7.msg7_mark, out key);
+            Message a = new Message();
+            a=dealmsg7(msg7);
+            string ssmg;
+            // MessageBox.Show(cvkey1);
+            ssmg = string.Concat(a.type, a.pwd, Encrypt1(string.Concat(a.tag, a.msg8_IDV, a.msg8_msg, "####", y.Sign(a.msg8_IDV, private_key)),key));
+            // MessageBox.Show(a.msg8_msg);
+            return ssmg;
+        }
+        public string ssMessage12(Message msg9)//发送message8,Message10, Message12
+        {
+            string key;
+            //  MessageBox.Show(msg7.msg7_mark);
+            Dic.myDictionary.TryGetValue(msg9.msg9_mark, out key);
+            Message a = new Message();
+            a=dealmsg7(msg9);
+            string ssmg;
+            // MessageBox.Show(cvkey1);
+           // MessageBox.Show(a.tag+a.msg8_IDV+a.msg8_msg);
+            ssmg = string.Concat(a.type, a.pwd, Encrypt1(string.Concat(a.tag, a.msg8_IDV, a.msg8_msg, "####", y.Sign(a.msg8_IDV, private_key)), key));
+            // MessageBox.Show(a.msg8_msg);
+            return ssmg;
+        }
+        public string ssMessage(Message msg5)//发送message6
+        {
+            string key;
+           // MessageBox.Show(msg5.cvkey);
+            Dic.myDictionary.TryGetValue(msg5.msg5_Au_IDc, out key);
+           // MessageBox.Show(key);
+            Message a = new Message();
+            a = dealMsg(msg5);
+            string ssmg;
+            string ssmg1;
+            ssmg = Encrypt1(string.Concat(a.tag, a.msg6_TS6),key);
+            ssmg1 = string.Concat(a.type, a.pwd, ssmg);
+            return ssmg1;
+        }
+        public static string Encrypt1(string str, string sKey)
+        {
+            DESCryptoServiceProvider des = new DESCryptoServiceProvider();
+            byte[] inputByteArray = Encoding.Default.GetBytes(str);
+            des.Key = ASCIIEncoding.ASCII.GetBytes(sKey);// 密匙
+            des.IV = ASCIIEncoding.ASCII.GetBytes(sKey);// 初始化向量
+            MemoryStream ms = new MemoryStream();
+            CryptoStream cs = new CryptoStream(ms, des.CreateEncryptor(), CryptoStreamMode.Write);
+            cs.Write(inputByteArray, 0, inputByteArray.Length);
+            cs.FlushFinalBlock();
+            var retB = Convert.ToBase64String(ms.ToArray());
+            return retB;
+        }
         public static string DecryptString(string pToDecrypt, string sKey)
         {
             DESCryptoServiceProvider des = new DESCryptoServiceProvider();
@@ -228,7 +391,7 @@ namespace Vserver1
                     this.Dispatcher.Invoke(new Action(() => { T5.AppendText(ssmg.ToString("yyyy/MM/dd HH:mm:ss")); }));
                     // this.Dispatcher.Invoke(new Action(() => { TextBox1.AppendText(ssmg.Length.ToString()); }));
                     string Cssmg;
-                    Cssmg = c.ssMessage(c);
+                    Cssmg =ssMessage(c);
                     this.Dispatcher.Invoke(new Action(() => { T4.AppendText(Cssmg); }));
                     Byte[] ssmg1 = new byte[1024];
                     ssmg1 = Encoding.ASCII.GetBytes(Cssmg);
@@ -239,11 +402,10 @@ namespace Vserver1
                 // myClientSocket.Close();
             }
                 if (c.type == "09")
-                {
-                     c.dealmsg7(c);
+            { 
                // MessageBox.Show(c.msg1_IDc);
                      string ssmg;
-                    ssmg = c.ssMessage8(c);
+                    ssmg =ssMessage12(c);
                     //MessageBox.Show(ssmg);
                     Byte[] ssmg1 = new byte[1024];
                     ssmg1 = Encoding.Unicode.GetBytes(ssmg);
@@ -252,10 +414,8 @@ namespace Vserver1
             }
                 if(c.type=="07")
             {
-               // MessageBox.Show(c.msg7_operation);
-                c.dealmsg7(c);
                 string ssmg;
-                ssmg = c.ssMessage8(c);
+                ssmg =ssMessage8(c);
                 //MessageBox.Show(ssmg);
                 Byte[] ssmg1 = new byte[2048];
                 ssmg1 = Encoding.Unicode.GetBytes(ssmg);
@@ -278,6 +438,19 @@ namespace Vserver1
                 MessageBox.Show(error.ToString());
             }
             return null;
+        }
+        public static string MD5Hash(string stringToHash)
+        {
+            var md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
+            byte[] emailBytes = Encoding.UTF8.GetBytes(stringToHash.ToLower());
+            byte[] hashedEmailBytes = md5.ComputeHash(emailBytes);
+            StringBuilder sb = new StringBuilder();
+            foreach (var b in hashedEmailBytes)
+            {
+                sb.Append(b.ToString("x2").ToLower());
+
+            }
+            return sb.ToString();
         }
         public static string GetLocalIP()
         {

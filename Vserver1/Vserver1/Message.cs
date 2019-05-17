@@ -49,7 +49,7 @@ ue>
         public string msg1_IDc;
         public string msg1_TS1;
         public string IDtgs;
-        public Message(string IDc, string tgs, DateTime TS1)//Message(1)和Message9
+        public Message(string IDc, string tgs, DateTime TS1)//Message(1)
         {
             this.pwd = "0000";
             this.type = "01";
@@ -61,7 +61,8 @@ ue>
         public string msg9_IDC;
         public string msg9_operation;
         public string msg9_rsa;
-        public Message(string IDC,string opreation,string rsa)
+        public string msg9_mark;
+        public Message(string mark,string IDC,string opreation,string rsa)//message9
         {
             this.pwd = "0000";
             this.type = "09";
@@ -69,6 +70,7 @@ ue>
             this.msg9_IDC = IDC;
             this.msg9_operation = opreation;
             this.msg9_rsa = rsa;
+            this.msg9_mark = mark;
         }
         //Message(2)
         public string msg2_IDtgs;
@@ -140,18 +142,20 @@ ue>
         public string msg7_IDC;
         public string msg_TS7;
         public string msg7_rsa;
-        public Message(string operation, string bookname,string IDC,DateTime ts,string rsa)
+        public string msg7_mark;
+        public Message(string mark, string operation, string bookname,string IDC,DateTime ts,string rsa)
         {
             this.pwd = "0000";
             this.type = "07";
             this.tag = "07";
+            this.msg7_mark = mark;
             this.msg7_operation = operation;
             this.msg7_bookname = bookname;
             this.msg7_IDC = IDC;
             this.msg_TS7 = ts.ToString("yyyy/MM/dd HH：mm：ss");
             this.msg7_rsa = rsa;
         }
-        public Message dealmsg7(Message msg7)//处理message7
+        /*public Message dealmsg7(Message msg7)//处理message7
         {
             DataBase1 b = new DataBase1();
             Message a = new Message();
@@ -193,7 +197,7 @@ ue>
 
             return a;
         }
-        public string ssMessage8(Message msg7)//发送message8,Message10, Message12
+       /* public string ssMessage8(Message msg7)//发送message8,Message10, Message12
         {
             Message a = new Message();
             a = dealmsg7(msg7);
@@ -202,11 +206,7 @@ ue>
             ssmg = string.Concat(a.type,a.pwd,Encrypt1(string.Concat(a.tag,a.msg8_IDV,a.msg8_msg,"####", y.Sign(a.msg8_IDV, private_key)),cvkey1));
            // MessageBox.Show(a.msg8_msg);
             return ssmg;
-        }
-        public string getrsa()
-        {
-            return "9999";
-        }
+        }*/
         public string MMessage5(Message msg5)//显示明文信息
         {
             string ticketv;
@@ -217,6 +217,7 @@ ue>
             mmsg = "ticketv:" + ticketv + "\n" + " Authenticatorc:" + AU + "\n";
             return mmsg;
         }
+        /*
         public Message dealMsg(Message msg5)// 处理message5
         {
            // DataBase1 a = new DataBase1();
@@ -270,7 +271,7 @@ ue>
             cs.FlushFinalBlock();
             var retB = Convert.ToBase64String(ms.ToArray());
             return retB;
-        }
+        }*/
 
         public string Encrypt3(string message2, string key)
         {
